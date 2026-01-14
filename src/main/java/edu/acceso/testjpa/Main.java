@@ -17,6 +17,8 @@ public class Main {
     public static void main(String[] args) {
 
         ch.qos.logback.classic.Logger hibernateLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate");
+        hibernateLogger.setLevel(ch.qos.logback.classic.Level.WARN);
+        
         String bd = "jdbc:sqlite:centro.db";
         
         Map<String, String> properties = new HashMap<>();

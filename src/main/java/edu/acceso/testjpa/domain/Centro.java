@@ -1,5 +1,7 @@
 package edu.acceso.testjpa.domain;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,7 +13,7 @@ import jakarta.persistence.Table;
 @Table(name = "Centro") // Sólo útil si la table se llama de modo diferente.
 
 public class Centro {
-
+    
     public static enum Titularidad {
         PUBLICA, PRIVADA
     }
@@ -71,4 +73,10 @@ public class Centro {
     public String toString() {
         return String.format("%s (%d)", getNombre(), getId());
     }
+
+    public List<Estudiante> getEstudiantes() {
+        return estudiantes;
+    
+    }
+    
 }
