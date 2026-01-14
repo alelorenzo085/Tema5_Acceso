@@ -13,6 +13,8 @@
 
         <!-- Clases mapeadas -->
         <class>edu.acceso.testjpa.domain.Centro</class>
+        <class>edu.acceso.testjpa.domain.Estudiante</class>
+        <class>edu.acceso.testjpa.domain.Titularidad</class>
 
         <!-- Más clases ... -->
 
