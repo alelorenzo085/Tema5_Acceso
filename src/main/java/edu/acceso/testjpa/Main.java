@@ -1,12 +1,9 @@
 package edu.acceso.testjpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.swing.text.html.parser.Entity;
-
-import org.hibernate.validator.internal.util.logging.LoggerFactory;
 
 import edu.acceso.testjpa.domain.Centro;
 import edu.acceso.testjpa.domain.Centro.Titularidad;
@@ -16,9 +13,14 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 public class Main {
+        private static Logger logger = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) {
+
+        ch.qos.logback.classic.Logger hibernateLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate");
+        String bd = "jdbc:sqlite:centro.db";
         
         Map<String, String> properties = new HashMap<>();
+        properties.put("jakarta.persistence.jdbc.url", bd);
         
         try(EntityManagerFactory emf = Persistence.createEntityManagerFactory("InstitutoPersistente")) {
 
