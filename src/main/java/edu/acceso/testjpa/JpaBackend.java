@@ -174,13 +174,12 @@ public class JpaBackend {
         });
     }
 
-
     /**
      * Versión sin índice de {@link #transaction(Integer, Consumer)} para cuando sólo hay una instancia.
      * @param action La acción a ejecutar.
      * @return 
      */
-    public static List<Estudiante> transaction(Consumer<EntityManager> action) {
+    public static void transaction(Consumer<EntityManager> action) {
         transaction(null, action);
     }
     // Fin transacciones.
