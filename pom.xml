@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.edu</groupId>
@@ -31,6 +30,48 @@
         <maven.compiler.target>21</maven.compiler.target>
         <hibernate.version>7.2.0.Final</hibernate.version>
     </properties>
+
+    <profiles>
+        <!-- Para que "maven clean -Pclean-javadoc-only" sólo borre la documentación -->
+        <profile>
+            <id>clean-javadoc-only</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.basedir}/target/reports/apidocs</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Otros posibles perfiles -->
+    </profiles>
+
+    <build>
+        <plugins>
+            <!-- Para generar la documentación en docs/apidocs -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <!-- La última versión puede consultarse en el repositorio de Maven -->
+                <version>3.11.2</version>
+                <configuration>
+                    <source>${maven.compiler.release}</source>                    <!-- Definido en <properties> -->
+                    <show>private</show>                    <!-- Si incluimos entidades privadas -->
+                </configuration>
+            </plugin>
+
+            <!-- Otros plugins ... -->
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
@@ -65,7 +106,7 @@
             <artifactId>hibernate-community-dialects</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
-        
+
         <!-- Implementación para Hibernate de la especificación anterior -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
