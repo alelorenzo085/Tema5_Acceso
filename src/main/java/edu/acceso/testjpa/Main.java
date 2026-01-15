@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.acceso.testjpa.domain.Centro;
@@ -57,11 +58,19 @@ public class Main {
             for(Estudiante e: estudiantes) em.persist(e);
         });
 
-        // Comprobar estudiantees
-        JpaBackend.transaction(idx, em -> {
+        // Comprobar estudiantes
+        List<Estudiante> estudiantes = JpaBackend.transactionR(em -> {
+            
             Centro c = em.find(Centro.class, 11004866);
-            System.out.printf("--- Estudiantes del centro '%s' ---\n", c.getNombre());
-            c.getEstudiantes().forEach(System.out::println);
+            List<Estudiante> lista = c.getEstudiantes();
+            //for(estudiante e: ee) {
+            // )}
+            return lista;
         });
+
+        System.out.printf("-- Estudiantes de '%s' --\n ", centro.getNombre() + ":");
+        estudiantes.forEach(System.out::println);
+
+        JpaBackend.reset();
     }
 }
