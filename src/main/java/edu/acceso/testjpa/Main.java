@@ -29,74 +29,39 @@ public class Main {
         
         Map<String, String> props = new HashMap<>();
         //props.put("jakarta.persistence.jdbc.url", bd);
-        
-        try(EntityManagerFactory emf = Persistence.createEntityManagerFactory("InstitutoPersistente", props)) {
 
-            // Agregamos un centro a la base de datos
-            try(EntityManager em = emf.createEntityManager()) {
-                EntityTransaction tr = em.getTransaction();
-                try {
-                    tr.begin();
-                    Centro centro = new Centro(11004866, "IES Castillo de Luna",Titularidad.PUBLICA);
-                    em.persist(centro);
-                    tr.commit();
-                } catch (Exception e) {
-                    if (tr != null && tr.isActive()) tr.rollback();
-                    logger.error("Imposible añadir un centro a la base de datos");
-                }
-            }
+        // Se crea un objeto para realizar transacciones
+        int idx = JpaBackend.createEntityManagerFactory("InstitutoPersistente", props);
 
-            // Recuperamos el centro y hacemos una modificación
-            Centro centro = null;
-            try(EntityManager em = emf.createEntityManager()) {
-                Centro centroRecuperado = em.find(Centro.class, 11004866);
-                System.out.println("Centro recuperado: " + centroRecuperado.getNombre() + ", " + centroRecuperado.getTitularidad());
+        // Transacción sin resultado para agregar un centro
+        JpaBackend.transaction(idx, em -> {
+            Centro centro = new Centro(11004866, "IES Castillo de Luna",Titularidad.PUBLICA);
+            em.persist(centro);
+        });
 
-                EntityTransaction tr = em.getTransaction();
-                try {
-                    tr.begin();
-                    centroRecuperado.setNombre("I.E.S. Castillo de Luna");
-                    tr.commit();
-                } catch (Exception e) {
-                    if (tr != null && tr.isActive()) tr.rollback();
-                    logger.error("Imposible obtener el centro y su nombre");
-                }
-            }
+        // Transacción con resultado (se aplica a la bbdd existente)
+        Centro centro = JpaBackend.transactionR(idx, em -> {
+            Centro c = em.find(Centro.class, 11004866);
+            c.setNombre("I.E.S. Castillo de Luna");
+            return c;
+        });
 
+        // Transacción sin resultado para agregar un centro
+        JpaBackend.transaction(idx, em -> {
             Estudiante[] estudiantes = new Estudiante[] {
                 new Estudiante("Manolo", LocalDate.of(2000, 01, 01), centro),
                 new Estudiante("Marisa", LocalDate.of(2004, 10, 12), centro)
             };
 
-            try(EntityManager em = emf.createEntityManager()) {
-                EntityTransaction tr = em.getTransaction();
-                try {
-                    tr.begin();
-                    for (Estudiante e : estudiantes) {
-                        em.persist(e);
-                    }
-                    tr.commit();
-                } catch (Exception e) {
-                    if (tr != null && tr.isActive()) tr.rollback();
-                    logger.error("No se han podido guardar los estudiantes", e);
-                }
-            }
+            // Por cada estudiante de la lista, se añade a la base de datos (acción persist)
+            for(Estudiante e: estudiantes) em.persist(e);
+        });
 
-            try(EntityManager em = emf.createEntityManager()) {
-                EntityTransaction tr = em.getTransaction();
-                try {
-                    tr.begin();
-                    centro = em.find(Centro.class, 11004866);
-                    System.out.printf("--- Estudiantes del centro %s ---\n", centro.getNombre());
-                    for(Estudiante e: centro.getEstudiantes()) {
-                        System.out.println(e);
-                    }
-                    tr.commit();
-                } catch (Exception e) {
-                    if (tr != null && tr.isActive()) tr.rollback();
-                    e.printStackTrace();
-                }
-            }
-        }
+        // Comprobar estudiantees
+        JpaBackend.transaction(idx, em -> {
+            Centro c = em.find(Centro.class, 11004866);
+            System.out.printf("--- Estudiantes del centro '%s' ---\n", c.getNombre());
+            c.getEstudiantes().forEach(System.out::println);
+        });
     }
 }

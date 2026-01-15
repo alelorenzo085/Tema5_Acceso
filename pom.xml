@@ -33,13 +33,11 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.5.18</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -67,7 +65,7 @@
             <artifactId>hibernate-community-dialects</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
-
+        
         <!-- Implementación para Hibernate de la especificación anterior -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
