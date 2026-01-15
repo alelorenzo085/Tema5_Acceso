@@ -16,7 +16,58 @@ _Este repositorio es una prueba realizada en clase utilizando herramientas de OR
 
 ## Dependencias
 
-* 
+```
+<dependencies>
+        <!-- Dependencia logback -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.18</version>
+        </dependency>
+
+        <!-- Dependencia SLF4J -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.1.0-alpha1</version>
+        </dependency>
+
+        <!-- Driver JDBC para SQLite -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.50.3.0</version>
+        </dependency>
+
+        <!-- Hibernate (Implementación de JPA) -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <!-- Soporte en Hibernate para SQLite -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        
+        <!-- Implementación para Hibernate de la especificación anterior -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>9.1.0.Final</version>
+        </dependency>
+
+        <!-- Opcional para evaluación dinámica de cadenas de texto (puede necesitarlo Hibernate Validator) -->
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+    </dependencies>
+```
 
 ## Autores ✒️
 
