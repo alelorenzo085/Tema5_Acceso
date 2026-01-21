@@ -1,6 +1,7 @@
 package edu.acceso.testjpa.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Column;
@@ -87,5 +88,22 @@ public class Centro {
 
     public List<Estudiante> getEstudiantes() {
         return estudiantes;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre, titularidad);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) return false;
+        if(!(obj instanceof Centro)) return false;
+
+        Centro otro = (Centro) obj;
+
+        return id == otro.getId()
+            && nombre.equals(otro.getNombre())
+            && titularidad == otro.getTitularidad();
     }
 }
