@@ -11,11 +11,9 @@
         <!-- Proveedor de JPA (Hibernate) -->
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <!-- Clases mapeadas -->
-        <class>edu.acceso.testjpa.domain.Centro</class>
-        <class>edu.acceso.testjpa.domain.Estudiante</class>
-        <class>edu.acceso.testjpa.domain.Titularidad</class>
-
+        <!-- Entidades (deberían autodetectarse si están anotadas con @Entity) -->
+        <class>com.edu.domain.Centro</class>
+        <class>com.edu.domain.Estudiante</class>
         <!-- Más clases ... -->
 
         <properties>
