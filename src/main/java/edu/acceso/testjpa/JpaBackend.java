@@ -2,13 +2,11 @@ package edu.acceso.testjpa;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import edu.acceso.testjpa.domain.Estudiante;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
@@ -116,12 +114,14 @@ public class JpaBackend {
     /**
      * Elimina todos los objetos previamente creados.
      */
-
-    // Cerrar todas las instancias abiertas y limpiar las estructuras.
     public static void reset() {
+        // Cierra todas las instancias abiertas
         for(EntityManagerFactory emf: instances.values()) {
             if(emf.isOpen()) emf.close();
         }
+
+        // ALTERNATIVA
+        // instances.values().forEach(emf -> emf.close());
 
         instances.clear();
         keys.clear();
@@ -177,7 +177,6 @@ public class JpaBackend {
     /**
      * Versión sin índice de {@link #transaction(Integer, Consumer)} para cuando sólo hay una instancia.
      * @param action La acción a ejecutar.
-     * @return 
      */
     public static void transaction(Consumer<EntityManager> action) {
         transaction(null, action);
