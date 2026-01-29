@@ -24,7 +24,7 @@ public class Estudiante {
     private LocalDate nacimiento;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = true)
     private Centro centro;
 
     public Estudiante() { super(); }
