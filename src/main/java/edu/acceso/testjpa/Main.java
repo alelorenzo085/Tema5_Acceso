@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.acceso.testjpa.domain.Centro;
+import edu.acceso.testjpa.domain.Centro_;
 import edu.acceso.testjpa.domain.Estudiante;
 import edu.acceso.testjpa.domain.Estudiante_;
 import edu.acceso.testjpa.domain.Titularidad;
@@ -221,5 +222,22 @@ public class Main {
                 System.out.printf("%s: %s.\n", e, e.getCentro());
             });
         });
+
+        // JOIN al revés: extraer todos los centros con estudiantes usando Criteria API
+
+        JpaBackend.transaction(em -> {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+
+            CriteriaQuery<Centro> query = cb.createQuery(Centro.class);
+            Root<Centro> root = query.from(Centro.class);
+            Join<Centro, Estudiante> estudiante = root.join(Centro_.estudiantes, JoinType.INNER);
+            query.select(root);
+
+            System.out.println("\n-- Centros con estudiante --");
+            TypedQuery<Centro> tq = em.createQuery(query);
+            tq.getResultList().forEach(System.out::println);
+            });
+
+            JpaBackend.reset();
     }
 }
