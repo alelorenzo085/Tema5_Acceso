@@ -190,9 +190,11 @@ public class Main {
             Root<Estudiante> root = query.from(Estudiante.class);
             query.select(cb.tuple(
                 root.get(Estudiante_.CENTRO).alias("centro"),
-                cb.count(root).alias("alias")
+                cb.count(root).alias("cantidad")
             ));
+
             query.groupBy(root.get(Estudiante_.CENTRO));
+            query.orderBy(cb.asc(cb.count(root)));
 
             System.out.println("\n-- Lista de centros --");
             TypedQuery<Tuple> tq = em.createQuery(query);

@@ -16,7 +16,8 @@ public class JpaBackend {
 
     /**
      * Lista de claves hash que representan las instancias creadas.
-     * Se utiliza una lista para mantener el orden de creación y permitir la recuperación por índice.
+     * Se utiliza una lista para mantener el orden de creación y permitir la
+     * recuperación por índice.
      */
     private static ArrayList<Integer> keys = new ArrayList<>();
     /**
@@ -27,24 +28,32 @@ public class JpaBackend {
     /**
      * Constructor privado para evitar instanciación.
      */
-    private JpaBackend() { super(); }
+    private JpaBackend() {
+        super();
+    }
 
     /**
-     * Genera un {@link EntityManagerFactory} a partir del nombre de la unidad de persistencia
+     * Genera un {@link EntityManagerFactory} a partir del nombre de la unidad de
+     * persistencia
      * y un mapa que modifica sus propiedades.
+     * 
      * @param persistenceUnit El nombre de la unidad de persistencia.
-     * @param props El mapa que define las propiedades definidas en tiempo de ejecución.
+     * @param props           El mapa que define las propiedades definidas en tiempo
+     *                        de ejecución.
      * @return Un índice que representa la instancia creada.
-     * @throws IllegalArgumentException Si el nombre de la unidad de persistencia es nulo.
-     * @throws IllegalStateException Si ya existe una instancia con esos parámetros.
+     * @throws IllegalArgumentException Si el nombre de la unidad de persistencia es
+     *                                  nulo.
+     * @throws IllegalStateException    Si ya existe una instancia con esos
+     *                                  parámetros.
      */
     public static int createEntityManagerFactory(String persistenceUnit, Map<String, String> props) {
-        if(persistenceUnit == null) throw new IllegalArgumentException("El nombre de la unidad de persistencia no puede ser nulo"); 
+        if (persistenceUnit == null)
+            throw new IllegalArgumentException("El nombre de la unidad de persistencia no puede ser nulo");
 
         int hashCode = Objects.hash(persistenceUnit, props);
 
         EntityManagerFactory instance = instances.get(hashCode);
-        if(instance != null && instance.isOpen()) {
+        if (instance != null && instance.isOpen()) {
             throw new IllegalStateException("Ya existe una EntityManagerFactory con esos parámetros");
         }
         instance = Persistence.createEntityManagerFactory(persistenceUnit, props);
@@ -54,12 +63,16 @@ public class JpaBackend {
     }
 
     /**
-     * Genera un {@link EntityManagerFactory} a partir del nombre de la unidad de persistencia
+     * Genera un {@link EntityManagerFactory} a partir del nombre de la unidad de
+     * persistencia
      * Se sobreentiende que no se modifica o añade ninguna propiedad.
+     * 
      * @param persistenceUnit El nombre de la unidad de persistencia.
      * @return Un índice que representa la instancia creada.
-     * @throws IllegalArgumentException Si el nombre de la unidad de persistencia es nulo.
-     * @throws IllegalStateException Si ya existe una instancia con esos parámetros.
+     * @throws IllegalArgumentException Si el nombre de la unidad de persistencia es
+     *                                  nulo.
+     * @throws IllegalStateException    Si ya existe una instancia con esos
+     *                                  parámetros.
      */
     public static int createEntityManagerFactory(String persistenceUnit) {
         return createEntityManagerFactory(persistenceUnit, null);
@@ -67,20 +80,24 @@ public class JpaBackend {
 
     /**
      * Devuelve un objeto EntityManagerFactory generado anteriormente.
+     * 
      * @param index El índice de la instancia a recuperar.
      * @return La instancia de EntityManagerFactory correspondiente al índice.
      * @throws IllegalArgumentException Si el índice está fuera de rango.
      */
     public static EntityManagerFactory getEntityManagerFactory(int index) {
-        if(index < 1 || index > keys.size()) throw new IllegalArgumentException("Índice fuera de rango");
+        if (index < 1 || index > keys.size())
+            throw new IllegalArgumentException("Índice fuera de rango");
 
         Integer hashCode = keys.get(index - 1);
-        if(hashCode == null) throw new IllegalStateException("La instancia solicitada ya no existe");
+        if (hashCode == null)
+            throw new IllegalStateException("La instancia solicitada ya no existe");
 
         EntityManagerFactory instance = instances.get(hashCode);
-        assert instance == null: "Falta de sincronización entre keys e instances";
+        assert instance == null : "Falta de sincronización entre keys e instances";
 
-        if(instance.isOpen()) return instance;
+        if (instance.isOpen())
+            return instance;
         else {
             instances.remove(hashCode);
             keys.set(index - 1, null);
@@ -89,17 +106,20 @@ public class JpaBackend {
     }
 
     /**
-     * Devuelve un objeto EntityManagerFactory generado anteriormente. Sólo funciona si se generó uno.
+     * Devuelve un objeto EntityManagerFactory generado anteriormente. Sólo funciona
+     * si se generó uno.
+     * 
      * @return El objeto resultante.
      * @throws IllegalStateException Si no hay ninguna instancia o si hay varias.
      */
     public static EntityManagerFactory getEntityManagerFactory() {
         EntityManagerFactory instance = null;
 
-        switch(instances.size()) {
+        switch (instances.size()) {
             case 1:
                 instance = instances.values().iterator().next();
-                if(instance.isOpen()) return instance;
+                if (instance.isOpen())
+                    return instance;
                 else {
                     reset();
                     throw new IllegalStateException("La instancia solicitada no está disponible");
@@ -116,8 +136,9 @@ public class JpaBackend {
      */
     public static void reset() {
         // Cierra todas las instancias abiertas
-        for(EntityManagerFactory emf: instances.values()) {
-            if(emf.isOpen()) emf.close();
+        for (EntityManagerFactory emf : instances.values()) {
+            if (emf.isOpen())
+                emf.close();
         }
 
         // ALTERNATIVA
@@ -130,31 +151,34 @@ public class JpaBackend {
     // Transacciones.
     /**
      * Ejecuta una acción dentro de una transacción, devolviendo un resultado.
-     * @param <T> El tipo de resultado de la acción.
-     * @param index El índice de la instancia a utilizar.
+     * 
+     * @param <T>    El tipo de resultado de la acción.
+     * @param index  El índice de la instancia a utilizar.
      * @param action La acción a ejecutar.
      * @return El resultado de la acción.
      */
     public static <T> T transactionR(Integer index, Function<EntityManager, T> action) {
-        EntityManagerFactory emf = index != null?getEntityManagerFactory(index):getEntityManagerFactory();
-        try(EntityManager em = emf.createEntityManager()) {
+        EntityManagerFactory emf = index != null ? getEntityManagerFactory(index) : getEntityManagerFactory();
+        try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction tx = em.getTransaction();
             try {
                 tx.begin();
                 T result = action.apply(em);
                 tx.commit();
                 return result;
-            }
-            catch(Exception e) {
-                if(tx != null && tx.isActive()) tx.rollback();
+            } catch (Exception e) {
+                if (tx != null && tx.isActive())
+                    tx.rollback();
                 throw new RuntimeException("Fallo en la transacción", e);
             }
         }
     }
 
     /**
-     * Versión sin índice de {@link #transactionR(Integer, Function)} para cuando sólo hay una instancia.
-     * @param <T> El tipo de resultado de la acción.
+     * Versión sin índice de {@link #transactionR(Integer, Function)} para cuando
+     * sólo hay una instancia.
+     * 
+     * @param <T>    El tipo de resultado de la acción.
      * @param action La acción a ejecutar.
      * @return El resultado de la acción.
      */
@@ -164,7 +188,8 @@ public class JpaBackend {
 
     /**
      * Ejecuta una acción dentro de una transacción, sin devolver resultado.
-     * @param index El índice de la instancia a utilizar.
+     * 
+     * @param index  El índice de la instancia a utilizar.
      * @param action La acción a ejecutar.
      */
     public static void transaction(Integer index, Consumer<EntityManager> action) {
@@ -175,7 +200,9 @@ public class JpaBackend {
     }
 
     /**
-     * Versión sin índice de {@link #transaction(Integer, Consumer)} para cuando sólo hay una instancia.
+     * Versión sin índice de {@link #transaction(Integer, Consumer)} para cuando
+     * sólo hay una instancia.
+     * 
      * @param action La acción a ejecutar.
      */
     public static void transaction(Consumer<EntityManager> action) {

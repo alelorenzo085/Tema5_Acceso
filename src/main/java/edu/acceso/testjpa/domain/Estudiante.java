@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Estudiante {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +27,9 @@ public class Estudiante {
     @JoinColumn(nullable = true)
     private Centro centro;
 
-    public Estudiante() { super(); }
+    public Estudiante() {
+        super();
+    }
 
     public Estudiante initialize(String nombre, LocalDate nacimiento, Centro centro) {
         setNombre(nombre);
@@ -76,7 +78,7 @@ public class Estudiante {
 
     public void setCentro(Centro centro) {
         this.centro = centro;
-    }    
+    }
 
     @Override
     public String toString() {

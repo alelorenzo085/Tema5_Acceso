@@ -30,7 +30,8 @@ public class Centro {
     }
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)  // GENERATED ALWAYS BY IDENTITY
+    // @GeneratedValue(strategy = GenerationType.IDENTITY) // GENERATED ALWAYS BY
+    // IDENTITY
     private Long id;
 
     @Column(name = "nombre", nullable = false, length = 255)
@@ -97,13 +98,15 @@ public class Centro {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) return false;
-        if(!(obj instanceof Centro)) return false;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Centro))
+            return false;
 
         Centro otro = (Centro) obj;
 
         return id == otro.getId()
-            && nombre.equals(otro.getNombre())
-            && titularidad == otro.getTitularidad();
+                && nombre.equals(otro.getNombre())
+                && titularidad == otro.getTitularidad();
     }
 }
