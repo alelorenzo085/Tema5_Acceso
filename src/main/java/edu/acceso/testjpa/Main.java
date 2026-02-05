@@ -88,9 +88,11 @@ public class Main {
         System.out.printf("-- Estudiantes de '%s' --\n ", castillo.getNombre() + ":");
         estudiantes.forEach(System.out::println);
 
-        // Creamos una transacción nueva para obtener únicamente los nombres de los estudiantes
+        // Creamos una transacción nueva para obtener únicamente los nombres de los
+        // estudiantes
         JpaBackend.transaction(em -> {
-            // Se establece una consulta a la tabla de Estudiante donde obtenemos solo su nombre
+            // Se establece una consulta a la tabla de Estudiante donde obtenemos solo su
+            // nombre
             TypedQuery<String> query = em.createQuery("SELECT e.nombre FROM Estudiante e", String.class);
 
             // Y se establece una lista con los nombres obtenidos
@@ -184,7 +186,8 @@ public class Main {
             tq.getResultList().forEach(System.out::println);
         });
 
-        // Transacción con consulta GROUP BY usando Criteria API para contar el número de estudiantes por centro
+        // Transacción con consulta GROUP BY usando Criteria API para contar el número
+        // de estudiantes por centro
 
         JpaBackend.transaction(em -> {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -207,7 +210,8 @@ public class Main {
             });
         });
 
-        // Transacción con consulta JOIN usando Criteria API para extraer todos los estudiantes con centro
+        // Transacción con consulta JOIN usando Criteria API para extraer todos los
+        // estudiantes con centro
         JpaBackend.transaction(em -> {
             CriteriaBuilder cb = em.getCriteriaBuilder();
 
@@ -236,8 +240,8 @@ public class Main {
             System.out.println("\n-- Centros con estudiante --");
             TypedQuery<Centro> tq = em.createQuery(query);
             tq.getResultList().forEach(System.out::println);
-            });
+        });
 
-            JpaBackend.reset();
+        JpaBackend.reset();
     }
 }
