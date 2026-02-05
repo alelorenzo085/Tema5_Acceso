@@ -1,6 +1,13 @@
 {
     "configurations": [
         {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "edu.acceso.testjpa.Main",
+            "projectName": "testjpa"
+        },
+        {
             "args": [
                 "--extensionDevelopmentPath=${workspaceFolder}"
             ],
@@ -19,13 +26,12 @@
             "console": "externalTerminal",
             "mainClass": ""
         },
-    {
-        "type": "java",
-        "name": "Launch Java Program",
-        "request": "launch",
-        "mainClass": ""
-    }
-
+        {
+            "type": "java",
+            "name": "Launch Java Program",
+            "request": "launch",
+            "mainClass": ""
+        }
     ]
 
 }
