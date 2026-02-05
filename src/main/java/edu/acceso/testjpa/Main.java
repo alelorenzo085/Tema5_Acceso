@@ -13,14 +13,10 @@ import edu.acceso.testjpa.domain.Estudiante;
 import edu.acceso.testjpa.domain.Titularidad;
 
 import ch.qos.logback.classic.Level;
-import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 
 public class Main {
-    private static Logger logger = LoggerFactory.getLogger(Main.class);
+        private static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
 
@@ -118,37 +114,7 @@ public class Main {
             System.out.printf("%s: %s.\n", e, centro != null ? centro.getNombre() : "***");
         }
 
-        JpaBackend.transaction(em -> {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-
-            CriteriaQuery<Estudiante> criteria = cb.createQuery(Estudiante.class);
-            Root<Estudiante> root = criteria.from(Estudiante.class);
-            criteria.select(root);
-
-            TypedQuery<Estudiante> tq = em.createQuery(criteria);
-            tq.getResultList().forEach(System.out::println);
-
-            CriteriaQuery<String> criteriaN = cb.createQuery(String.class);
-            root = criteriaN.from(Estudiante.class);
-            criteriaN.select(root.get("nombre"));
-
-            TypedQuery<String> tqN = em.createQuery(criteriaN);
-            tqN.getResultList().forEach(System.out::println);
-
-        CriteriaQuery<Tuple> criteriaT = cb.createQuery(Tuple.class);
-        root = criteriaT.from(Estudiante.class);
-        criteriaT.select(cb.tuple(
-            root.get("nombre").alias("nombre"),
-            root.get("id").alias("id")
-        ));
-        TypedQuery<Tuple> tqT = em.createQuery(criteriaT);
-                tqT.getResultList().forEach(t -> {
-                String nombre = t.get("nombre", String.class);
-                Long id = t.get("id", Long.class);
-                System.out.printf("%d: %s", id, nombre);
-            });
-        });
-
-    // Resetea el hashmap de valores y objetos y cierra objetos abiertos
-    JpaBackend.reset();
-}}
+        // Resetea el hashmap de valores y objetos y cierra objetos abiertos
+        JpaBackend.reset();
+    }
+}

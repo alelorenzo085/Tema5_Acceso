@@ -32,6 +32,71 @@
         <hibernate.version>7.2.0.Final</hibernate.version>
     </properties>
 
+    <profiles>
+    <!-- Para que "maven clean -Pclean-javadoc-only" sólo borre la documentación -->
+    <profile>
+        <id>clean-javadoc-only</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <configuration>
+                        <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                        <filesets>
+                            <fileset>
+                                <directory>${project.basedir}/target/reports/apidocs</directory>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+
+    <!-- Otros posibles perfiles -->
+</profiles>
+
+<build>
+    <plugins>
+        <!-- Para generar la documentación en docs/apidocs -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <!-- La última versión puede consultarse en el repositorio de Maven -->
+            <version>3.11.2</version>
+            <configuration>
+                <source>${maven.compiler.source}</source>
+                <show>private</show>
+            </configuration>
+        </plugin>
+
+        <!-- Plugin para generar sitio/documentación online -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.12.1</version>
+            <configuration>
+                <reportPlugins>
+                    <reportPlugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </reportPlugin>
+                </reportPlugins>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+
+<reporting>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>3.4.1</version>
+        </plugin>
+    </plugins>
+</reporting>
+
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>
