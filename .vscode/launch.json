@@ -21,14 +21,14 @@
         },
         {
             "type": "java",
-            "name": "Launch External Terminal",
+            "name": "Launch Terminal Externa",
             "request": "launch",
             "console": "externalTerminal",
             "mainClass": ""
         },
         {
             "type": "java",
-            "name": "Launch Java Program",
+            "name": "Launch Programa de Java",
             "request": "launch",
             "mainClass": ""
         }
