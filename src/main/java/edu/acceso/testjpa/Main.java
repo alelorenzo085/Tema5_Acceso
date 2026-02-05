@@ -18,6 +18,8 @@ import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 
 public class Main {
@@ -202,6 +204,21 @@ public class Main {
                 Centro centro = t.get("centro", Centro.class);
                 Long cantidad = t.get("cantidad", Long.class);
                 System.out.printf("%s: %d alumnos.\n", centro, cantidad);
+            });
+        });
+
+        JpaBackend.transaction(em -> {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+
+            CriteriaQuery<Estudiante> query = cb.createQuery(Estudiante.class);
+            Root<Estudiante> root = query.from(Estudiante.class);
+            Join<Estudiante, Centro> centro = root.join(Estudiante_.centro, JoinType.INNER);
+            query.select(root);
+
+            System.out.println("\n-- Estudiante con su centro --");
+            TypedQuery<Estudiante> tq = em.createQuery(query);
+            tq.getResultList().forEach(e -> {
+                System.out.printf("%s: %s.\n", e, e.getCentro());
             });
         });
     }
